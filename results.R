@@ -4,7 +4,7 @@ library(broom)
 library(lavaan)
 
 # load, reshape, and nest data
-load("gsslong.Rdata")
+load("~/Dropbox/panel_change_sem/gsslong.Rdata")
 d <- gss.long %>% 
   pivot_longer(abany:xmovie, names_to = "variable", values_to = "y") %>% 
   pivot_wider(names_from = wave, values_from = y, names_prefix = "y") %>%
@@ -259,7 +259,7 @@ results <- d %>%
   pivot_longer(AUM1:CFA, names_to = "mod_spec", values_to = "mod_object") %>% 
   mutate(glanced = map(mod_object, p_glance)) %>% 
   unnest(glanced) %>% 
-  select(variable, ds, mod_spec, BIC, chisq, npar, rmsea, converged, nobs) %>% 
+  select(variable, ds, mod_spec, bic, chisq, npar, rmsea, converged, nobs) %>% 
   mutate(type = case_when(
     mod_spec == "SDM1" | mod_spec == "SDM2" ~ "SDM",
     mod_spec == "CFA" ~ "CFA",
