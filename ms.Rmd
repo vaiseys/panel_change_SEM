@@ -1,32 +1,36 @@
 ---
-title: "A model-based method for measuring stability and change in personal culture with three-wave panel data"
+title: A model-based method for measuring stability in personal culture with panel data[^thanks]
 author:
   - Stephen Vaisey, Duke University
   - Kevin Kiley, Duke University
 date: "12/16/2020"
 output: 
-  bookdown::pdf_book:
-    number_sections: true
+  bookdown::pdf_document2:
+    latex_engine: xelatex
     toc: false
+    number_sections: true
 bibliography: ["panel-change-sem.bib"]
+header-includes:
+  - \usepackage{setspace}\onehalfspacing
+mainfont: Minion Pro
+fontsize: 11pt
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 library(tidyverse)
 library(broom)
-library(lavaan)
-library(DiagrammeR)
 library(knitr)
 
 ```
 
+[^thanks]: Thanks to Ken Bollen for inspiration and advice on this project.
 
 # Introduction
 
-Kiley and Vaisey [-@kiley2020] recently published a method for assessing whether survey respondents appear to be changing their beliefs between waves or whether they instead appear to be repeating fixed responses with temporary local influences. This question is important because these processes reflect very different theoretical models of how "personal culture" operates [see @lizardo2017]. That is, if cultural beliefs are primarily public and responsive to external discourse, we should observe more updating as people respond to changes in their local environment. On the other hand, if cultural beliefs are primarily something learned early, then "settled dispositions" should be relatively resilient to local shocks [see also @vaisey2016].
+Kiley and Vaisey [-@kiley2020] recently published a method for assessing whether survey respondents appear to be changing their beliefs between waves or whether they instead appear to be repeating fixed responses with temporary local influences. This question is important because these processes reflect very different theoretical models of the evolution of "personal culture" [see @lizardo2017]. That is, if cultural beliefs are primarily public and responsive to external discourse, we should observe more updating as people respond to changes in their local environment. On the other hand, if cultural beliefs are primarily something learned early, then "settled dispositions" should be relatively resilient to change [see also @vaisey2016].
 
-In this paper, we build on @kiley2020 and introduce an alternative method for distinguishing between situations where respondents appear be actively updating their beliefs and situations where respondents' beliefs appear to be settled. This method, based on structural equation modeling, provides a close fit to the theoretical models outlined in @kiley2020 and provides even stronger support for their claim that most cultural beliefs reflect settled dispositions developed relatively early in life.
+In this paper, we build on @kiley2020 and introduce an alternative method for distinguishing between cases where respondents appear be actively updating their responses and situations where respondents' responses appear to be settled. This method, based on structural equation modeling, provides a close fit to the theoretical models outlined in @kiley2020 and provides even stronger support for their claim that most cultural beliefs reflect settled dispositions developed prior to adulthood.
 
 # Background
 
@@ -63,20 +67,20 @@ The alternative method we propose uses structural equation modeling to implement
 
 From this basic version, we can add further constraints. For example we can constrain $\alpha_1 = \alpha_2 = \alpha_3$ if we are willing to assume that the mean response is the same at all waves. And we could constrain $\sigma^2_{v1} = \sigma^2_{v2} = \sigma^2_{v3}$ if we are willing to assume that the variance of the responses does not change over time.
 
-This is not the place for a general overview of structural equation modeling [@bollen1989; see @kline2015 for an accessible introduction]. But the basic intuition in the three-wave case is that we are attempting to reconstruct 9 observed elements from the data (3 means, 3 variances, and 3 covariances) using a model with fewer than 9 parameters. For example, if we make the assumptions in Equation (2), including the equality constraints in the following paragraph, we can estimate a model that has only 3 parameters: one value of $\alpha$ (shared by all waves), one $\sigma^2_v$ (shared by all waves), and one $\sigma^2_U$. Here $U$ is a "latent variable," which, in this specification, simply means a person-specific "error" that gets added equally to a person's response at every wave. $U_i$ reflects an individual's unchanging tendency to respond to a certain question the same way over the study period (a "settled disposition").
+This is not the place for a general overview of structural equation modeling [@bollen1989; see @kline2015 for an accessible introduction]. But the basic intuition in the three-wave case is that we are attempting to reconstruct 9 observed elements from the data (3 means, 3 variances, and 3 covariances) using a simpler model with fewer than 9 parameters. For example, if we make the assumptions in Equation (2), including the equality constraints in the following paragraph, we can estimate a model that has only 3 parameters: one value of $\alpha$ (shared by all waves), one $\sigma^2_v$ (shared by all waves), and one $\sigma^2_U$. Here $U$ is a "latent variable," which, in this specification, simply means a person-specific "error" (or fixed effect) that gets added equally to a person's response at every wave. $U_i$ reflects an individual's unchanging tendency to respond to a certain question the same way over the study period (a "settled disposition").
 
-Using this model will not work well to "predict" the data if the data were generated by a process that looks like the active updating model on the left of Figure 1. We could instead estimate the following model:
+Using this model will not work well to reconstruct the observed data if the data were generated by a process that looks like the active updating model (on the left of Figure 1). We could instead estimate the following model:
 
 \begin{eqnarray}
   y_{i3} = \alpha_3 + \rho y_{i2} + v_{i3} \\ 
   y_{i2} = \alpha_2 + \rho y_{i1} + v_{i2} \notag
 \end{eqnarray}
 
-Here we cannot make $Y_1$ a dependent variable because we don't have its previous value ($Y_0$). Therefore we can only use it as a predictor. As above, we can make further simplifications if we want (e.g., $\alpha_2 = \alpha_3$ or $\sigma^2_{v2} = \sigma^2_{v3}$). Using this fully simplified version, we are estimating a model with 5 parameters: one value of $\alpha$ (shared by waves 2 and 3), one $\sigma^2_v$ (shared by waves 2 and 3), the $\rho$ autocorrelation parameter, and the mean and variance of $Y_1$.
+Here we cannot make $Y_1$ a dependent variable because we don't have its previous value (which would be $Y_0$). Therefore we can only use $Y_1$ as a predictor. As above, we can make further simplifications if we want (e.g., $\alpha_2 = \alpha_3$ or $\sigma^2_{v2} = \sigma^2_{v3}$). Using this fully simplified version, we are estimating a model with 5 parameters: one value of $\alpha$ (shared by waves 2 and 3), one $\sigma^2_v$ (shared by waves 2 and 3), the $\rho$ autocorrelation parameter, and the mean and variance of $Y_1$.
 
-If $Y_t$ were always measured perfectly, we could simply compare the penalized likelihoods (e.g., Bayesian Information Criteria) of the two models to see which is more likely to be the true model given the data [@bollen2014]. Unfortunately, most GSS items likely contain some measurement error. Any measurement bias--the systematic tendency for an item to over- or underestimate a person's "true" value--will induce error correlations between waves that have no basis in the causal process. Thus $U_i$ in Equation (2) represents both settled dispositions and respondent-specific measurement bias.
+If $Y_t$ were always measured perfectly, we could simply compare the penalized likelihoods (e.g., Bayesian Information Criteria) of the two models to see which is more likely to be the true model given the data [@bollen2014]. Unfortunately, most GSS items likely contain some measurement error. Any measurement bias -- the systematic tendency for an item to over- or underestimate a person's "true" value -- will induce error correlations between waves that have no basis in the causal process. Thus $U_i$ in Equation (2) represents both settled dispositions and respondent-specific measurement bias.
 
-For this reason, the most reasonable specification of the active updating model combines features of equations (2) and (3):
+For this reason, the most reasonable specification of the active updating model combines features of equations (2) and (3), as follows:
 
 \begin{eqnarray}
   y_{i3} = \alpha_3 + \rho y_{i2} + U_i + v_{i3} \\ 
@@ -84,18 +88,18 @@ For this reason, the most reasonable specification of the active updating model 
   \text{Cov}(U,Y_1) = \tau \notag
 \end{eqnarray}
 
-Adding $U$ to equation (4) allows for systematic correlations between the wave 2 and wave 3 responses due to measurement bias or error.[^U_note] Estimating $\tau$, the covariance between $U$ and $Y_1$, reflects that $U$ and $Y_1$ share common unobserved causes (e.g., systematic measurement error, values of the pre-survey $Y_0$).
+Adding $U$ to equation (4) allows for systematic correlations between the wave 2 and wave 3 responses due to measurement bias or error.[^U_note] Estimating $\tau$, the covariance between $U$ and $Y_1$, reflects that $U$ and $Y_1$ share common unobserved causes (e.g., measurement bias, values of the pre-survey $Y_0$).
 
 [^U_note]: Unfortunately, in the three-wave case there's no way to distinguish systematic measurement bias or error from true person-level stable differences as components of $U$ without additional untestable assumptions.
 
 The most straightforward[^spec_note] way to compare models is to specify them as special cases of a more general model. Figure 2 shows the basic model.
 
-```{r, out.width="400px", fig.cap="General Model", fig.align='center'}
+```{r, out.width="70%", fig.cap="General Model", fig.align='center'}
 knitr::include_graphics("figure2.pdf")
 
 ```
 
-[^spec_note]: We could specify an even more parsimonious version of the settled dispositions model by estimating Equation (2) with the equality assumptions discussed in the text. This would effectively be estimating a confirmatory factor analysis on $Y_t$. This would only require three parameters. We will revisit this later.
+[^spec_note]: We could specify an even more parsimonious version of the settled dispositions model by estimating Equation (2) with the equality assumptions discussed in the text. This would effectively be estimating a confirmatory factor analysis on $Y_t$. This would only require three parameters. We will revisit this in Section 4.2.
 
 We have three basic choices to make:
 
@@ -118,19 +122,18 @@ For any given three-wave panel, we can compare the fit of these models against e
 
 ## Advantages of the approach
 
-@kiley2020 also compare estimates using Equation (1) with and without constraints to adjudicate between the active updating and settled dispositions accounts. The approach we outline here is essentially identical in spirit but a bit different in the details. The main difference is that KV compare models based solely on how well they "predict" the Wave 3 response. Using structural equation models allows comparing the fit of the model to all the observed data, not just the final response. For example, the KV model has no leverage in cases where respondents give the same response in waves 1 and 2, but a different response in wave 3, while the model presented here does. 
+@kiley2020 also compare estimates using Equation (1) with and without constraints to adjudicate between the active updating and settled dispositions accounts. The approach we outline here is the same in spirit but different in the details. The main difference is that KV compare models based solely on how well they "predict" the Wave 3 response. Using structural equation models allows comparing the fit of the model to _all_ the observed data, not just the final response. For example, the KV model has no leverage in cases where respondents give the same response in waves 1 and 2, but a different response in wave 3, while the model presented here does. 
 
 To oversimplify slightly, the models presented here essentially adjudicate whether people are equally likely to deviate from their baseline response in all waves, which would be evidence of the settled dispositions model, or whether waves 1 and 3 are more likely than wave 2 to be deviations, which would be evidence of persisting changes and active updating.
 
+
 ## Analytic strategy
 
-We use the same 183 variables and three panels of the General Social Survey as @kiley2020. Rather than pool the panels, we estimate models separately on each one. Most variables appear in all three panels but 6 are measured in only one panel and one is measured in two panels. This gives us 536 total three-wave data sets.
+We use the same 183 variables and three panels of the General Social Survey as @kiley2020. Rather than pool the panels as they do, we estimate models separately on each one. Most variables appear in all three panels but 6 are measured in only one panel and one is measured in two panels. This gives us 536 total three-wave data sets.
 
 For each of the 536 datasets, we estimate all 6 of the candidate models. We then compare fits using the Bayesian Information Criterion [BIC, see @raftery1995; @bollen2014]. In order to make the best case possible for each theoretical model, we will compare the best-fitting of the four AUM models with the best-fitting of the two SDM models. In cases where the BIC difference between the two "finalist" models is less than 2, we consider the evidence inconclusive [@raftery1995; @bollen2014].
 
 The approach is quite conservative, favoring the active updating model over the settled dispositions model when there is meaningful evidence that some amount of people in the sample are making durable changes in opinion or behavior. This should not be taken as evidence that *many* people in the population are making durable changes, only that there is any evidence of durable change at all.
-
-\newpage
 
 # Results
 
@@ -216,7 +219,7 @@ less_than_05 <- results %>%
   
 ```
 
-Almost all (`r ok_fits[2,2] %>% round(.,1)` percent) of the preferred SDM models have acceptable fits (RMSEA < .08). But we can put the SDM to an even stronger test by estimating a model that assumes no change and no updating across waves. This is the model implied by Equation (2) and is equivalent to a simple confirmatory factor analysis with just three parameters: one value of $\alpha$ (shared by all waves), one $\sigma^2_v$ (shared by all waves), and one $\sigma^2_U$. In essence, this model assumes that each wave is a report of a fixed quantity determined before the time of the study.
+Almost all (`r ok_fits[2,2] %>% round(.,1)` percent) of the preferred SDM models have acceptable fits (RMSEA < .08). But we can put the SDM to an even stronger test by estimating a model that assumes no updating across waves _and_ no changes in the means (i.e., no period effects). This is the model implied by Equation (2) and is equivalent to a simple confirmatory factor analysis with just three parameters: one value of $\alpha$ (shared by all waves), one $\sigma^2_v$ (shared by all waves), and one $\sigma^2_U$. In essence, this model assumes that each wave is a report of a fixed quantity determined before the time of the study.
 
 Estimating this model shows that it fits `r less_than_08` percent of the variable-panels acceptably (RMSEA < .08) and `r less_than_05` percent of the variable-panels well (RMSEA < .05). Figure 4 shows the overall distribution of RMSEA values. We don't want to take these conventional cutoffs too literally [see @barrett2007], but altogether these results indicate that the majority of GSS items are highly compatible with the settled dispositions model.
 
@@ -226,7 +229,7 @@ cfa_fits <- results %>%
   filter(mod_spec == "CFA")
 
 ggplot(cfa_fits, aes(x = rmsea)) +
-  stat_ecdf(size = 1.2, alpha = .8) +
+  stat_ecdf(size = .8, alpha = .8) +
   geom_vline(xintercept = .05, linetype = "dashed") +
   geom_vline(xintercept = .08, linetype = "dotted") +
   labs(x = "RMSEA",
@@ -235,21 +238,21 @@ ggplot(cfa_fits, aes(x = rmsea)) +
 
 ```
 
-# Discussion and Conclusions
+# Discussion
 
-Building on KV, we have presented a model-based approach to estimating whether the pattern of attitude and behavior change in the population should be best thought of as following a *settled dispositions* model, where people have stable baselines and change is temporary, or an *active updating* model, where changes tend to persist. Using a set of structural equation models that formalize these theoretical processes under a variety of assumptions, we compared the best-fitting settled dispositions model to the best-fitting active updating model for each variable in each panel, a total of 536 variable-panel pairs. The overwhelming majority of variable-panels prefer the settled dispositions model, with 69 variables preferring the settled dispositions model in all panels and only three variables preferring the active updating model in all panels. 
+Building on @kiley2020, we have presented a model-based approach to estimating whether the pattern of attitude and behavior change in the population should be best thought of as following a *settled dispositions* model, where people have stable baselines and change (if any) is temporary, or an *active updating* model, where changes tend to persist. Using a set of structural equation models that formalize these theoretical processes under a variety of assumptions, we compared the best-fitting settled dispositions model to the best-fitting active updating model for each variable in each panel, a total of 536 variable-panel pairs. The overwhelming majority of variable-panels prefer the settled dispositions model, with 69 variables preferring the settled dispositions model in all panels and only three variables preferring the active updating model in all panels. 
 
-While we cannot account for attitudes and behaviors that are not measured here, these results suggest, consistent with KV, that a wide range of attitudes and behaviors tend to be settled by the time people are old enough to participate in surveys like the GSS. While this is not surprising since we examine the same set of questions as KV, it is important that different statistical assumptions lead to similar substantive conclusions. People might change their responses from wave to wave, but this change does not tend to persist, meaning it reflects temporary changes in opinion or measurement error.[^temp] There is little evidence of even a moderate amount of durable change in opinions in the medium-term (2-4 years). 
+While we cannot account for attitudes and behaviors that are not measured here, these results suggest, consistent with KV, that a wide range of attitudes and behaviors tend to be settled by the time people are old enough to participate in surveys like the GSS. While this is not surprising since we examine the same set of questions as KV, it is important that different statistical assumptions lead to similar substantive conclusions. People might change their responses from wave to wave, but this change does not tend to persist, meaning it reflects temporary changes in opinion or measurement error.[^temp] There is little evidence of even a moderate amount of durable change in opinions in the medium-term (2-4 years). Perhaps even more striking, the results in Section 4.2 show that the majority of variables are consistent with no change at all over the four-year period.
 
 [^temp]: Within the settled dispositions model, our method cannot distinguish between change that occurs because people lack opinions and are more or less guessing at random [@converse1964], change that occurs because people are influenced by short-term messaging and other considerations [@zaller1992], or changes that occurs because of other forms of measurement error [@ansolabehere2008; @alwin2007]. We assume that these short-term changes are some combination of these forces, which might vary by question.
 
-On specific variables, the approach presented here occasionally suggests different conclusions than those presented in KV, as would be expected under models that make different assumptions, with the model presented here favoring the SDM model in more cases. One reason these differences emerge is because the model presented here uses slightly more data than the KV model. A person who gives the same response in waves 1 and 2 but a different response in wave 3 is mostly useless under the KV model but can factor into the calculation in the model presented here. Because variable-panels can switch from favoring the active updating model to favoring the settled dispositions model with the addition or subtraction of a few cases, this suggests that evidence of the AUM is very weak even when it is favored. In particular, when the AUM is favored, it is because a very small proportion of the population is making durable changes. It is difficult to draw broader conclusions about these discrepancies, as they cut across both question substance and question structure.
+On specific variables, the approach presented here occasionally suggests different conclusions than those presented in KV, as would be expected under models that make different assumptions, with the model presented here favoring the SDM model in more cases. There are two main reasons for these differences. First, KV pool their panels together, meaning that if _any_ of the three panels show updating, the variable as a whole is likely to show updating. A second these differences emerge is because the model presented here uses slightly more data than the KV model. A person who gives the same response in waves 1 and 2 but a different response in wave 3 is mostly useless under the KV model but can factor into the calculation in the model presented here. Because variable-panels can switch from favoring the active updating model to favoring the settled dispositions model with the addition or subtraction of a few cases, this suggests that evidence of the AUM is very weak even when it is favored. In particular, when the AUM is favored, it is because a very small proportion of the population is making durable changes. It is difficult to draw broader conclusions about these discrepancies, as they cut across both question substance and question structure.
 
 While it would be impossible to discuss all 183 variables or 536 variable-panels in depth, there are some broad patterns worth highlighting. Figure \@ref(fig:categories) plots the proportion of variable-panels preferring each model by subject material.[^subjects] KV's results suggest that issues related to civil liberties, gender, and social trust tend to be settled by the time people entered the the GSS. The method outlined above finds similar results, with 86 percent, 89 percent, and 91 percent of variable-panels in these categories, respectively, favoring the settled dispositions models. These are the three categories with the largest proportions of variable-panels favoring the settled dispositions model.
 
 [^subjects]: It should be kept in mind when comparing across subject areas that the questions in subject areas often have different structures, and the questions asked in each category should not be thought of as a random sample of issues in that domain. 
 
-```{r categories, fig.cap='Proportion of perferred models, by subject category', fig.align='center'}
+```{r categories, fig.cap='Proportion of preferred models, by subject category', fig.align='center'}
 load("attitude_vars.Rdata")
 winners %>%
   left_join(attitude_vars, by = c("variable"="var")) %>% 
@@ -272,7 +275,7 @@ Similarly, KV suggested that public behaviors were more likely to demonstrate ac
 
 Another issue worth touching on is variation across panels in favoring the settled dispositions or active updating models within the same question. Of the 176 questions that appear in all three panels, 110 either favor the settled dispositions model or are inconclusive in all three waves (with 69 clearly favoring active updating in all panels). However, 58 variables favor each model in at least one panel. 
 
-Some of these discrepancies are likely due to real changes in the social environment that only affect members of one panel. For example, several of the questions with  divergent findings pertain to whether the federal government is spending too little, about right, or too much on various priorities. People's responses might be changing in response to changes in federal spending, changes in who controls the federal government, or changes in public messaging around these issues, which might only happen in certain years. 
+Some of these discrepancies are likely due to real changes in the social environment that only affect members of one panel. For example, several of the questions with divergent findings pertain to whether the federal government is spending too little, about right, or too much on various priorities. People's responses might be changing in response to changes in federal spending, changes in who controls the federal government, or changes in public messaging around these issues, which might only happen in certain years. 
 
 For questions that demonstrate active updating in at least one panel but have no obvious changing external referent (such as church attendance, religious activity, partisan identification, frequency of prayer, and support for marijuana legalization), durable change might be happening but occur at such low rates that finite samples using imperfect measures do not capture enough respondents undergoing durable change in a particular panel to favor the active updating model. Again, even on generally stable issues we expect some people in the population to be actively updating their behavior -- most people know an adult who has changed their opinion on some issue -- but this should be thought of as the exception.[^recall] Our results suggest that when we observe someone change their response to a survey question, the assumption should be that it will not be a permanent change. 
 
@@ -291,11 +294,15 @@ For questions that demonstrate active updating in at least one panel but have no
   geom_bar(color = "black", fill = "gray") 
 ```
 
-This points to a limitation of both this approach and the one used by KV. Neither approach can quantify the proportion of the sample that is undergoing active updating. It is not clear whether, for the variable-panels that show evidence active updating, there is a large or small proportion of respondents making durable changes.
+This points to a limitation of both this approach and the one used in @kiley2020. Neither approach can quantify the proportion of the sample that is undergoing active updating. It is not clear whether, for the variable-panels that show evidence active updating, there is a large or small proportion of respondents making durable changes.
 
 The two approaches share additional limitations. Both approaches assume linearity in the variable being measured. If an outcome is measured on an ordinal scale such as a four-point Likert scale (strongly agree, agree, disagree, strongly disagree), a change from agree to strongly agree is treated the same as a change from disagree to agree, which might or might not be a reasonable assumption. Both approaches also rely on weights to account for differential non-response over the course of the panel. If the mechanism of non-response and active updating are both driven by some unobserved variable, then our results might under-estimate the probability of durable change. That being said, we have no reason to assume that non-response is more likely to be related to active updating than settled dispositions.
 
-The approach presented here and the approach outlined in KV attempt to adjudicate a similar theoretical question: are there more people reporting patterns that look like active updating than we would expect if people behaved according to a settled dispositions model? The difference between the two approaches are sets of assumptions about what counts as an active updating pattern and what counts as a settled dispositions pattern. The fact that different sets of assumptions reach the same substantive conclusion, even under tests very favorable to detecting active updating, strengthens the findings from KV and others [e.g., @vaisey2016] that the settled dispositions model should be thought of as the dominant model for attitude behavior in adults. 
+# Conclusion
+
+The approach presented here and the approach @kiley2020 use attempt to adjudicate a similar theoretical question: are there more people reporting patterns that look like active updating than we would expect if people behaved according to a settled dispositions model? The difference between the two approaches are sets of assumptions about what counts as an active updating pattern and what counts as a settled dispositions pattern. The fact that different sets of assumptions reach the same substantive conclusion, even under tests very favorable to detecting active updating, strengthens the findings from KV and others [e.g., @vaisey2016] that the settled dispositions model should be thought of as the dominant model for attitude behavior in adults.
+
+These findings have clear implications for cultural sociology and public opinion research. We believe that these findings are also relevant for research on cultural evolution [see @henrich2015; @heyes2018; @mesoudi2016] because they place significant limits on the likely pace and mechanisms of cultural change. Cohort-based change will necessarily be slower than that implied by simple population models of social learning. This lag process allows cultural equilibria to be durable even when the contemporary information environment is changing [@oconnor2019]. We hope future research explores these links more directly.
 
 
 \newpage
