@@ -1,19 +1,16 @@
 ---
 title: A model-based method for measuring stability in personal culture with panel data[^thanks]
-author:
-  - Stephen Vaisey, Duke University
-  - Kevin Kiley, Duke University
-date: "12/16/2020"
+date: "12/19/2020"
 output: 
   bookdown::pdf_document2:
     latex_engine: xelatex
     toc: false
     number_sections: true
 bibliography: ["panel-change-sem.bib"]
-# header-includes:
-#   - \usepackage{setspace}\onehalfspacing
+header-includes:
+  - \usepackage{setspace}\onehalfspacing
 mainfont: Minion Pro
-fontsize: 11pt
+fontsize: 12pt
 ---
 
 ```{r setup, include=FALSE}
