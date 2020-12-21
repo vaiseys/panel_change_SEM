@@ -1,5 +1,5 @@
 ---
-title: A model-based method for measuring stability in personal culture with panel data[^thanks]
+title: A model-based method for detecting persistent cultural change using panel data[^thanks]
 date: "12/19/2020"
 output: 
   bookdown::pdf_document2:
@@ -116,6 +116,8 @@ Crossing these three binary choices would normally lead to 8 candidate models. H
 | SDM2  | free                 | 0  	  | free  	  | 7            |
 
 For any given three-wave panel, we can compare the fit of these models against each other to help determine which of the models is most likely to have generated the data.
+
+\newpage
 
 ## Advantages of the approach
 
