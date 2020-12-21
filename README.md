@@ -1,0 +1,1 @@
+This repository provides the data and code to reproduce "A model-based method for detecting persistent cultural change using panel data," by Vaisey and Kiley. See the preprint here: https://osf.io/preprints/socarxiv/ec46t
