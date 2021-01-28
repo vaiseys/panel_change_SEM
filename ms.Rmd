@@ -3,7 +3,7 @@ title: A model-based method for detecting persistent cultural change using panel
 author:
   - Stephen Vaisey[^SV]
   - Kevin Kiley[^KK]
-date: "12/16/2020"
+date: "`r Sys.Date()`"
 output: 
   bookdown::pdf_document2:
     latex_engine: xelatex
@@ -68,7 +68,7 @@ The alternative method we propose uses structural equation modeling to implement
   y_{i3} = \alpha_3 + U_i + \epsilon_{i3} \notag
 \end{eqnarray}
 
-From this basic version, we can add further constraints. For example we can constrain $\alpha_1 = \alpha_2 = \alpha_3$ if we are willing to assume that the mean response is the same at all waves. And we could constrain $\sigma^2_{\epsilon_1} = \sigma^2_{\epsilon_2} = \sigma^2_{\epsilon_2}$ if we are willing to assume that the variance of the responses does not change over time.
+From this basic version, we can add further constraints. For example we can constrain $\alpha_1 = \alpha_2 = \alpha_3$ if we are willing to assume that the mean response is the same at all waves. And we could constrain $\sigma^2_{\epsilon_1} = \sigma^2_{\epsilon_2} = \sigma^2_{\epsilon_3}$ if we are willing to assume that the variance of the responses does not change over time.
 
 This is not the place for a general overview of structural equation modeling [@bollen1989; see @kline2015 for an accessible introduction]. But the basic intuition in the three-wave case is that we are attempting to reconstruct 9 observed elements from the data (3 means, 3 variances, and 3 covariances) using a simpler model with fewer than 9 parameters. For example, if we make the assumptions in Equation (2), including the equality constraints in the following paragraph, we can estimate a model that has only 3 parameters: one value of $\alpha$ (shared by all waves), one $\sigma^2_{\epsilon}$ (shared by all waves), and one $\sigma^2_U$. Here $U$ is a "latent variable," which, in this specification, simply means a person-specific "error" (or fixed effect) that gets added equally to a person's response at every wave. $U_i$ reflects an individual's unchanging tendency to respond to a certain question the same way over the study period (a "settled disposition").
 
@@ -308,7 +308,7 @@ The two approaches share additional limitations. Both approaches assume linearit
 
 The approach presented here and the approach @kiley2020 use attempt to adjudicate a similar theoretical question: are there more people reporting patterns that look like active updating than we would expect if people behaved according to a settled dispositions model? The difference between the two approaches are sets of assumptions about what counts as an active updating pattern and what counts as a settled dispositions pattern. The fact that different sets of assumptions reach the same substantive conclusion, even under tests very favorable to detecting active updating, strengthens the findings from KV and others [e.g., @vaisey2016] that the settled dispositions model should be thought of as the dominant model for attitude behavior in adults.
 
-These findings have clear implications for cultural sociology and public opinion research, favoring models of cultural change rooted in cohort replacement [@mannheim1952; @ryder1965] and those that place importance on early-life socialization over contemporary social environments [such as @bourdieu1990]. We believe that these findings are also relevant for research on cultural evolution [see @henrich2015; @heyes2018; @mesoudi2016] because they place significant limits on the likely pace and mechanisms of cultural change. Cohort-based change will necessarily be slower than that implied by simple population models of social learning. This lag process allows cultural equilibria to be durable even when the contemporary information environment is changing [@oconnor2019]. We hope future research explores these links more directly.
+These findings have clear implications for cultural sociology and public opinion research, favoring models of cultural change rooted in cohort replacement [@mannheim1970; @ryder1965] and those that place importance on early-life socialization over contemporary social environments [such as @bourdieu1990]. We believe that these findings are also relevant for research on cultural evolution [see @henrich2015; @heyes2018; @mesoudi2016] because they place significant limits on the likely pace and mechanisms of cultural change. Cohort-based change will necessarily be slower than that implied by simple population models of social learning. This lag process allows cultural equilibria to be durable even when the contemporary information environment is changing [@oconnor2019]. We hope future research explores these links more directly.
 
 
 \newpage
