@@ -6,6 +6,7 @@ author:
 date: "`r Sys.Date()`"
 output: 
   bookdown::pdf_document2:
+    keep_tex: true
     latex_engine: xelatex
     toc: false
     number_sections: true
